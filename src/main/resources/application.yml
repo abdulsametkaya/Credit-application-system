@@ -4,7 +4,6 @@ server:
     include-message: always
     include-binding-errors: always
     include-stacktrace: never
-   
 
 spring:
   datasource:
@@ -22,11 +21,10 @@ spring:
     hibernate:
      format_sql: true
 
-greenrent:
+creditapplication:
  app:
-  jwtSecret: creditApp@123
+  jwtSecret: creditApp@12
   jwtExpirationMs: 86400000
-      
       
 logging:
  file:
@@ -37,7 +35,7 @@ logging:
  level:
    '[org.springframework.web]': INFO
    '[org.hibernate]': INFO
-   '[com.greenrent]': DEBUG
+   '[com.creditapplication]': DEBUG
    
 info:
  application:

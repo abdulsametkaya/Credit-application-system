@@ -206,10 +206,14 @@ public class CustomerService {
 
         Map<Integer, String> result = new HashMap<>();
 
-        if(score < 500){
+        if(score == -1){
+            limit = -1;
+            result.put(limit,"INVALID IDENTITY NUMBER");
+            return result;
+        } else if (score >=0 && score < 500 ) {
             result.put(limit,"UNCONFIRMED");
             return  result;
-        }else if(score >= 500 && score < 1000 && monthlyIncome.intValue() <= 5000){
+        } else if(score >= 500 && score < 1000 && monthlyIncome.intValue() <= 5000){
             limit = 10000;
             result.put(limit,"CONFIRMED");
             return  result;
@@ -230,21 +234,27 @@ public class CustomerService {
 
         int creditScore = 0;
 
-        int lastDigit = (int) (identityNumber%10);
+        double lastDigit = (identityNumber%10);
 
-        switch (lastDigit){
+        switch ((int) lastDigit){
             case 0:
                 creditScore = 2000;
+                break;
             case 2:
                 creditScore = 550;
+                break;
             case 4:
                 creditScore = 1000;
+                break;
             case 6:
                 creditScore = 400;
+                break;
             case 8:
                 creditScore = 900;
+                break;
+                //bad request invalid identity number
             default:
-                creditScore = 400;
+                creditScore = -1;
 
         }
 

@@ -15,14 +15,14 @@ public class JwtUtils {
 
 	private static Logger logger=LoggerFactory.getLogger(JwtUtils.class);
 	
-	@Value("${greenrent.app.jwtSecret}")
+	@Value("${creditapplication.app.jwtSecret}")
 	private String jwtSecret;
 	
-	@Value("${greenrent.app.jwtExpirationMs}")
+	@Value("${creditapplication.app.jwtExpirationMs}")
 	private long jwtExpirationMs;
 	
 	public String generateJwtToken(Authentication authentication) {
-		 UserDetailsImpl userDetails=   (UserDetailsImpl)  authentication.getPrincipal();
+		 UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		
 		 return Jwts.builder()
 				.setSubject(""+(userDetails.getId()))

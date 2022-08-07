@@ -63,9 +63,9 @@ public class CustomerController {
 		return ResponseEntity.ok(user);
 	}
 
-	@GetMapping("/application")
+	@GetMapping("/application/{identity}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
-	public ResponseEntity<ApplicationResponse> creditApplication(@Valid @RequestParam Long identity){
+	public ResponseEntity<ApplicationResponse> creditApplication(@PathVariable Long identity){
 
 		Map<Integer, String> result = customerService.application(identity);
 
@@ -75,12 +75,10 @@ public class CustomerController {
 		for (Integer key : result.keySet()){
 			num = key;
 		}
-
 		applicationResponse.setCreditLimit(num);
-		applicationResponse.setResult(result.get(0));
+		applicationResponse.setResult(result.get(num));
 
 		return ResponseEntity.ok(applicationResponse);
-
 	}
 
 

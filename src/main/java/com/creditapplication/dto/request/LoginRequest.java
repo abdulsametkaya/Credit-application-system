@@ -17,7 +17,7 @@ public class LoginRequest {
 	@Email(message="Please provide a correct email")
 	private String email;
 	
-	@NotNull(message="Please provide a passwprd")
+	@NotNull(message="Please provide a password")
 	private String password;
 
 }
