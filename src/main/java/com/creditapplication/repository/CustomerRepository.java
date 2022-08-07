@@ -14,11 +14,13 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 	Optional<Customer> findByEmail(String email);
 	Boolean existsByEmail(String email);
+	Optional<Customer> findByIdentityNumber(Long identityNumber);
 
-	void update(@Param("id") Long id, @Param("IdentityNumber") Long IdentityNumber,
+	@Modifying
+	@Query("UPDATE Customer u SET u.identityNumber=:identityNumber,u.fullName=:fullName, " +
+			"u.phoneNumber=:phoneNumber, u.email=:email, u.salary=:salary WHERE u.id=:id")
+	void update(@Param("id") Long id, @Param("identityNumber") Long IdentityNumber,
 				@Param("fullName") String fullName , @Param("phoneNumber") String phoneNumber,
 				@Param("email") String email, @Param("salary") Double salary);
-	
-
 	
 }

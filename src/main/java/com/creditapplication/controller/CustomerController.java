@@ -5,13 +5,11 @@ import com.creditapplication.dto.request.AdminCustomerUpdateRequest;
 import com.creditapplication.dto.request.CustomerUpdateRequest;
 import com.creditapplication.dto.request.UpdatePasswordRequest;
 import com.creditapplication.dto.response.CAResponse;
+import com.creditapplication.dto.response.ApplicationResponse;
 import com.creditapplication.dto.response.ResponseMessage;
 import com.creditapplication.service.CustomerService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
 @AllArgsConstructor
-public class UserController {
+public class CustomerController {
 	
-	
+	@Autowired
 	private CustomerService customerService;
 	
 	@GetMapping("/auth/all")
@@ -46,6 +45,14 @@ public class UserController {
 		 return ResponseEntity.ok(userDTO);
 	}
 
+	@GetMapping("/{identity}")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
+	public ResponseEntity<CustomerDTO> getUserByIdentity(@PathVariable Long identity){
+		CustomerDTO customerDTO = customerService.findByIdentity(identity);
+
+		return ResponseEntity.ok(customerDTO);
+	}
+
 	
 	//http://localhost:8080/user/3/auth
 	//to get any user in the sytem, admin is able to use this method.
@@ -55,7 +62,27 @@ public class UserController {
 		CustomerDTO user= customerService.findById(id);
 		return ResponseEntity.ok(user);
 	}
-	
+
+	@GetMapping("/application")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
+	public ResponseEntity<ApplicationResponse> creditApplication(@Valid @RequestParam Long identity){
+
+		Map<Integer, String> result = customerService.application(identity);
+
+		ApplicationResponse applicationResponse = new ApplicationResponse();
+
+		int num =0;
+		for (Integer key : result.keySet()){
+			num = key;
+		}
+
+		applicationResponse.setCreditLimit(num);
+		applicationResponse.setResult(result.get(0));
+
+		return ResponseEntity.ok(applicationResponse);
+
+	}
+
 
 	/*
 	 * http://localhost:8080/user/auth { "newPassword":"testup",
@@ -89,7 +116,8 @@ public class UserController {
 		
 		return ResponseEntity.ok(response);
 		
-	} 
+	}
+
 	
 	//http://localhost:8080/user/2/auth
 	@DeleteMapping("/{id}/auth")

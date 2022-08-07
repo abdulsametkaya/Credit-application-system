@@ -12,5 +12,7 @@ public class ErrorMessage {
 
 	public final static String PASSWORD_NOT_MATCHED="Your password are not matched";
 
+	public final static String ID_NUMBER_NOT_FOUND_MESSAGE="Customer with identity number %d not found";
+
 
 }

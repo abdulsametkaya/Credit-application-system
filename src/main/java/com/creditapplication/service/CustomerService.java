@@ -16,14 +16,13 @@ import com.creditapplication.exception.message.ErrorMessage;
 import com.creditapplication.repository.CustomerRepository;
 import com.creditapplication.repository.RoleRepository;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -104,6 +103,8 @@ public class CustomerService {
                 customerUpdateRequest.getEmail(), customerUpdateRequest.getSalary());
     }
 
+
+
     public void updateCustomerAuth(Long id, AdminCustomerUpdateRequest adminCustomerUpdateRequest) {
         boolean emailExist = customerRepository.existsByEmail(adminCustomerUpdateRequest.getEmail());
 
@@ -174,6 +175,82 @@ public class CustomerService {
 
         return roles;
     }
+
+    public CustomerDTO findByIdentity(Long identityNumber) {
+
+        Customer user = customerRepository.findByIdentityNumber(identityNumber).orElseThrow(
+                () -> new ResourceNotFoundException(String.format
+                        (ErrorMessage.ID_NUMBER_NOT_FOUND_MESSAGE,identityNumber)));
+
+        return customerMapper.customerToCustomerDTO(user);
+
+    }
+
+    public Map<Integer, String> application(Long identityNumber) {
+        Customer user = customerRepository.findByIdentityNumber(identityNumber).orElseThrow(
+                () -> new ResourceNotFoundException(String.format
+                        (ErrorMessage.ID_NUMBER_NOT_FOUND_MESSAGE,identityNumber)));
+        double montlyIncome = user.getSalary();
+        int score = creditScoreCalculator(user.getIdentityNumber());
+
+        Map<Integer, String> result = applicationResult(score,montlyIncome);
+
+        return result;
+    }
+
+    private Map<Integer, String> applicationResult(Integer score, Double monthlyIncome) {
+
+        int limit = 0;
+
+        Integer creditLimit = 4;
+
+        Map<Integer, String> result = new HashMap<>();
+
+        if(score < 500){
+            result.put(limit,"UNCONFIRMED");
+            return  result;
+        }else if(score >= 500 && score < 1000 && monthlyIncome.intValue() <= 5000){
+            limit = 10000;
+            result.put(limit,"CONFIRMED");
+            return  result;
+        }else if(score >= 500 && score < 1000 && monthlyIncome.intValue() > 5000){
+            limit = 20000;
+            result.put(limit,"CONFIRMED");
+            return  result;
+        }else if(score >= 1000){
+            limit = (int) (monthlyIncome* creditLimit);
+            result.put(limit,"CONFIRMED");
+            return  result;
+        }
+        result.put(limit,"UNCONFIRMED");
+        return  result;
+    }
+
+    private Integer creditScoreCalculator(Long identityNumber){
+
+        int creditScore = 0;
+
+        int lastDigit = (int) (identityNumber%10);
+
+        switch (lastDigit){
+            case 0:
+                creditScore = 2000;
+            case 2:
+                creditScore = 550;
+            case 4:
+                creditScore = 1000;
+            case 6:
+                creditScore = 400;
+            case 8:
+                creditScore = 900;
+            default:
+                creditScore = 400;
+
+        }
+
+        return creditScore;
+    }
+
 
 
 

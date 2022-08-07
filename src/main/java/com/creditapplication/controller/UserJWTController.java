@@ -24,11 +24,11 @@ import javax.validation.Valid;
 @RequestMapping
 @AllArgsConstructor
 public class UserJWTController {
-	
+
 	private CustomerService customerService;
-	
+
 	private AuthenticationManager authManager;
-	
+
 	private JwtUtils jwtUtils;
 
 	@PostMapping("/register")
@@ -56,7 +56,5 @@ public class UserJWTController {
 		
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
-	
-	
-	
+
 }
