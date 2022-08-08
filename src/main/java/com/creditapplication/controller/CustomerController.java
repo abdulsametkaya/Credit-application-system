@@ -34,8 +34,7 @@ public class CustomerController {
 	    return ResponseEntity.ok(users);
 	}
 	
-	
-	//Sistemdeki kayıtlı herhangi bir kullanıcı kendi bilgilerini getiriyor.
+
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
 	public ResponseEntity<CustomerDTO> getUserById(HttpServletRequest request){
@@ -54,7 +53,7 @@ public class CustomerController {
 	}
 
 	
-	//http://localhost:8080/user/3/auth
+	//http://localhost:8080/user/{id}/auth
 	//to get any user in the sytem, admin is able to use this method.
 	@GetMapping("/{id}/auth")
 	@PreAuthorize("hasRole('ADMIN')")

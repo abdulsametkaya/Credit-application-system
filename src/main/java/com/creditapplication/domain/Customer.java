@@ -31,11 +31,11 @@ public class Customer {
     @Column(length=50,nullable = false,unique = true)
     private String email;
 
-    @Column(length = 14, nullable=false)
-    private String phoneNumber;
-
     @Column(length =12,nullable=false )
     private String password;
+
+    @Column(length = 14, nullable=false)
+    private String phoneNumber;
 
     @Column(length = 7, nullable=false)
     private Double salary;
