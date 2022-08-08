@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
-public class GreenRentExceptionHandler extends ResponseEntityExceptionHandler {
+public class CreditAppExceptionHandler extends ResponseEntityExceptionHandler {
 
 	//her seferinde tekrar response entity kullanmamak için bu method oluşturuldu.
 	private ResponseEntity<Object> buildResponseEntity(ApiResponseError error){
